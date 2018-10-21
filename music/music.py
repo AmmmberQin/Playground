@@ -8,6 +8,7 @@ import math
 import random
 import pygame
 import argparse
+import matplotlib.pyplot as plt
 from collections import deque
 
 '''
@@ -29,17 +30,26 @@ def foo(freq, file_name):
     file.writeframes(data)
     file.close()
 
-def generateNote(freq):
+def generateNote(freq, gShowPlot=False):
     nSamples = 44100
     sampleRate = 44100
     N = sampleRate//freq
     buf = deque([random.random() - 0.5 for _ in range(N)])
+
+    if gShowPlot:
+        axline, = plt.plot(buf)
+
     samples = np.array([0]*nSamples, 'float32')
     for i in range(nSamples):
         samples[i] = buf[0]
         avg = 0.996 * 0.5 * (buf[0] + buf[1])
         buf.append(avg)
         buf.popleft()
+
+        if gShowPlot:
+            if i % 1000 == 0:
+                axline.set_ydata(buf)
+                plt.draw()
     samples = np.array(samples*32767, 'int16')
     return samples.tostring()
 
@@ -95,7 +105,7 @@ if __name__ == "__main__":
     for name, freq in list(pmNotes.items()):
         fileName = f"{name}.wav"
         if not os.path.exists(fileName) or args.display:
-            data = generateNote(freq)
+            data = generateNote(freq, gShowPlot)
             print(f'Creating {fileName}...')
             writeWave(fileName, data)
         else:
