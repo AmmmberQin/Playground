@@ -17,16 +17,22 @@ def loadTexture(filename):
     """load OpenGL 2D texture from given image file"""
     img = Image.open(filename) 
     imgData = numpy.array(list(img.getdata()), np.int8)
+    #创建纹理对象
     texture = glGenTextures(1)
     glPixelStorei(GL_UNPACK_ALIGNMENT,1)
+    #绑定纹理对象
     glBindTexture(GL_TEXTURE_2D, texture)
+    #将数据的拆包设置为1
     glPixelStorei(GL_UNPACK_ALIGNMENT,1)
+    #如何处理边缘纹理
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE)
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE)
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+    #查找纹理颜色值，利用了纹理坐标和采样
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.size[0], img.size[1], 
                  0, GL_RGBA, GL_UNSIGNED_BYTE, imgData)
+    #设置绑定纹理中的图像数据。 此时，图像数据传送到显存，纹理准备好使用了。
     glBindTexture(GL_TEXTURE_2D, 0)
     return texture
 
