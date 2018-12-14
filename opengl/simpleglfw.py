@@ -55,7 +55,7 @@ out vec4 fragColor;
 void main(){
     if (showCircle){
 
-        if (distance(vTexCoord, vec2(0.5, 0.5)) > 0.5)
+        if (distance(vTexCoord, vec2(0.5, 0.5)) > 0.1)
         {
             //如果距离大于阈值，丢弃当前像素
             discard;
